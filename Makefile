@@ -1,4 +1,4 @@
-resume: resume.tex layout.sty
+resume: resume.tex format.sty
 	pdflatex resume.tex
 
 clean:
