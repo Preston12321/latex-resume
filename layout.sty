@@ -1,0 +1,132 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{layout}[2020/07/06 Resume page elements]
+
+\RequirePackage[margin=.5in]{geometry}
+\RequirePackage{xparse}
+\RequirePackage{ifthen}
+\RequirePackage{titlesec}
+\RequirePackage{multicol}
+\RequirePackage{hyperref}
+\RequirePackage{framed}
+\RequirePackage{fontawesome5}
+
+% Use Times New Roman font
+\RequirePackage{fontenc}
+\RequirePackage{mathptmx}
+\fontfamily{ptm}\selectfont
+
+% General formatting adjustments
+\setlength{\tabcolsep}{12pt}
+\titleformat{\section}{\vspace{-.5em}\bfseries\uppercase}{}{0em}{}[\titlerule\vspace{-.5em}]
+\renewcommand{\labelitemi}{{\large $\bullet$}}
+\pagenumbering{gobble}
+
+%%%%%%%%%% HEADER SECTION %%%%%%%%%%
+\newcommand{\resumeheader}[7]{
+    \begin{center}
+        #1 \\
+        \vspace{.5em}
+        \begin{tabular}{ c c }
+            #2 & #3 \\
+        \end{tabular}
+        \begin{tabular}{ c c c c }
+            #4 & #5 & #6 & #7 \\
+        \end{tabular}
+    \end{center}
+}
+
+\newcommand{\leading}[1]{#1\enspace}
+\newcommand{\name}[1]{\textbf{\Huge #1}}
+\newcommand{\address}[1]{\leading{\faHome} #1}
+\newcommand{\phone}[1]{\leading{\faMobile} #1}
+\newcommand{\email}[1]{\href{mailto:#1}{\leading{\faEnvelope} #1}}
+\newcommand{\website}[2]{\href{#1}{\leading{\faGlobe} #2}}
+\newcommand{\github}[2]{\href{#1}{\leading{\faGithub} #2}}
+\newcommand{\linkedin}[2]{\href{#1}{\leading{\faLinkedin} #2}}
+
+%%%%%%%%%% EDUCATION SECTION %%%%%%%%%%
+\newenvironment{educationsection}{\section{Education}{}}{}
+
+% {School Name}{School Location}{Degree Type}{Graduation Date}{Major}{GPA}{Coursework}
+\newcommand{\educationentry}[7]{
+    \entry{\bfseries{#1, #2}}{\itshape #3 Expected #4}[\textit{Major:} #5][\itshape GPA: #6]{
+        \vspace{-1.4em}\noindent
+        \textit{Coursework:}
+        \begin{minipage}[t]{0.85\linewidth}
+            #7
+        \end{minipage}
+    }
+}
+
+%%%%%%%%%% EXPERIENCE SECTION %%%%%%%%%%
+\newenvironment{experiencesection}{\section{Experience}}{}
+
+% {Job Title}{Company Name}{Company Location}{Employment Dates}{Duties}
+\newcommand{\experienceentry}[5]{
+    \entry{\textbf{#1,} #2, #3}{\textit{#4}}{}{}{#5}
+}
+
+%%%%%%%%%% PROJECT SECTION %%%%%%%%%%
+\newenvironment{projectsection}{\section{Projects}}{}
+
+% {Project Name}{Project Dates}{Details}
+\newcommand*{\projectentry}[3]{
+    \entry{\bfseries #1}{\itshape #2}{}{}{#3}
+}
+
+%%%%%%%%%% SKILLS SECTION %%%%%%%%%%
+\newcounter{SkillsOnLine}
+
+\newenvironment{skillsection}{
+    \section{Skills}
+    \vspace{.75em}
+}{}
+
+\newenvironment{skillgroup}[1]{
+    \vspace{-.5em}
+    \ifthenelse{\equal{\theSkillsOnLine}{0}}{
+    }{
+        \setcounter{SkillsOnLine}{0}
+    }
+    \textbf{#1:}
+    \vspace{-.75em}
+    \begin{center}
+    \begin{framed}
+}{
+    \end{framed}
+    \end{center}
+}
+
+\newcommand{\skill}[1]{
+    \begin{minipage}{.18\linewidth}
+        \begin{center}
+            #1
+        \end{center}
+    \end{minipage}
+    \stepcounter{SkillsOnLine}
+    \ifthenelse{\equal{\theSkillsOnLine}{4}}{
+        \setcounter{SkillsOnLine}{0} \\*
+    }{}
+}
+
+%%%%%%%%%% ENTRIES %%%%%%%%%%
+% {Line 1 - Left}{Line 1 - Right}[Line 2 - Left][Line 2 - Right][Line 3]
+\NewDocumentCommand{\entry}{m m O{NULL} O{NULL} O{NULL}}{
+    \noindent
+    {#1} \hfill {#2} \\
+    \ifthenelse{\equal{#3}{NULL} \AND \equal{#4}{NULL}}{
+        \vspace{-1.5em}
+    }{
+        {#3} \hfill {#4} \\
+    }
+    \ifthenelse{\equal{#5}{NULL}}{}{#5}
+    \par \vspace{.25em}
+}
+
+\newenvironment{details}{
+    \begin{itemize}
+}{
+    \end{itemize}
+}
+
+\newcommand{\detail}{\vspace{-.75em}\item}
