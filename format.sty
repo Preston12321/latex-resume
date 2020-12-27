@@ -4,6 +4,7 @@
 \RequirePackage[margin=.5in]{geometry}
 \RequirePackage{xparse}
 \RequirePackage{ifthen}
+\RequirePackage{etoolbox}
 \RequirePackage{titlesec}
 \RequirePackage{multicol}
 \RequirePackage{hyperref}
@@ -62,16 +63,25 @@
 \newenvironment{experiencesection}{\section{Experience}}{}
 
 % {Job Title}{Company Name}{Company Location}{Employment Dates}{Duties}
-\newcommand{\experienceentry}[5]{
-    \entry{\textbf{#1,} #2, #3}{\textit{#4}}{}{}{#5}
+\newcommand{\experienceentry}[6]{
+  \entry{\textbf{#1,} #2, #3}{\textit{#4}}[\textit{#5}][][#6]
 }
 
-%%%%%%%%%% PROJECT SECTION %%%%%%%%%%
-\newenvironment{projectsection}{\section{Projects}}{}
+%%%%%%%%%% COLLABORATIVE PROJECT SECTION %%%%%%%%%%
+\newenvironment{cprojectsection}{\section{Collaborative Projects}}{}
 
-% {Project Name}{Project Dates}{Details}
-\newcommand*{\projectentry}[3]{
-    \entry{\bfseries #1}{\itshape #2}{}{}{#3}
+% {Project Name}{Project Dates}{Skills}{Details}
+\newcommand*{\cprojectentry}[4]{
+  \entry{\bfseries #1}{\itshape #2}[\textit{#3}][][#4]
+    \vspace{-0.5em}
+}
+
+%%%%%%%%%% PERSONAL PROJECT SECTION %%%%%%%%%%
+\newenvironment{pprojectsection}{\section{Personal Projects}}{}
+
+% {Project Name}{Skills}{Details}
+\newcommand*{\pprojectentry}[3]{
+  \entry{\bfseries #1}{}[\textit{#2}][][#3]
     \vspace{-0.5em}
 }
 
@@ -114,15 +124,19 @@
 
 %%%%%%%%%% ENTRIES %%%%%%%%%%
 % {Line 1 - Left}{Line 1 - Right}[Line 2 - Left][Line 2 - Right][Line 3]
-\NewDocumentCommand{\entry}{m m O{NULL} O{NULL} O{NULL}}{
+\NewDocumentCommand{\entry}{m m O{} O{} O{}}{
     \noindent
     {#1} \hfill {#2} \\
-    \ifthenelse{\equal{#3}{NULL} \AND \equal{#4}{NULL}}{
-        \vspace{-1.5em}
-    }{
+    \notblank{#3}{
+      \ifblank{#4}{
+        {#3}
+      }{
         {#3} \hfill {#4} \\
+      }
+    }{
+    \vspace{-1em}
     }
-    \ifthenelse{\equal{#5}{NULL}}{}{#5}
+    \notblank{#5}{\vspace{.25em} #5}{}
     \par \vspace{.25em}
 }
 
